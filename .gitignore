@@ -1,0 +1,18 @@
+# Virtual environment
+.venv/
+
+# Data folders
+data_raw/
+data_classified/
+
+# Jupyter & editor files
+*.ipynb_checkpoints
+*.layout
+convert_csv.ipynb
+eda.ipynb
+
+# Keys
+.env
+
+# System junk
+.DS_Store
