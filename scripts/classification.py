@@ -2,13 +2,16 @@ import json
 import requests
 from pathlib import Path
 from tqdm import tqdm
+from dotenv import load_dotenv
+import os
 
 # ---- Configuration ----
-INPUT_PATH = "../data_raw/Yelp JSON/yelp_academic_dataset_business.json"
-OUTPUT_DIR = "../data/business_by_cat"
-PROGRESS_PATH = f"{OUTPUT_DIR}/progress_by_cat.json"
-MODEL = "mistral"
+INPUT_PATH = os.getenv("INPUT_PATH")
+OUTPUT_DIR = os.getenv("OUTPUT_DIR")
+MODEL = os.getenv("MODEL")
+OLLAMA_API = os.getenv("OLLAMA_API")
 ISA_TYPES = ["automotive", "healthcare", "hospitality", "nightlife", "personal care", "restaurant", "retail"]
+PROGRESS_PATH = f"{OUTPUT_DIR}/progress_by_cat.json"
 
 Path(OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
 
@@ -43,7 +46,7 @@ def build_prompt(name, categories):
 
 def classify_with_ollama_api(name, categories):
     prompt = build_prompt(name, categories)
-    response = requests.post("http://localhost:11434/api/chat", json={
+    response = requests.post(OLLAMA_API, json={
         "model": MODEL,
         "messages": [{"role": "user", "content": prompt}],
         "stream": False
@@ -88,4 +91,4 @@ with open(INPUT_PATH, "r", encoding="utf-8") as f:
                 with open(PROGRESS_PATH, "w", encoding="utf-8") as f:
                     json.dump(list(processed_ids), f)
 
-print("✅ All businesses classified and saved.")
+print("---- All businesses classified and saved ----")
